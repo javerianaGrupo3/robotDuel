@@ -6,4 +6,5 @@ module com.javeriana.proyecto.robotduel {
         exports com.javeriana.proyecto.robotduel;
 
         opens com.javeriana.proyecto.robotduel.modelo;
-        }
+        opens com.javeriana.proyecto.robotduel.logica;
+}
