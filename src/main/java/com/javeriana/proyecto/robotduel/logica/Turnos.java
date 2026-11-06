@@ -5,6 +5,7 @@ import com.javeriana.proyecto.robotduel.modelo.EstadoCombate;
 public class Turnos {
 
     private final EstadoCombate jugadorA;
+
     private final EstadoCombate jugadorB;
 
     public Turnos(EstadoCombate jugadorA, EstadoCombate jugadorB) {

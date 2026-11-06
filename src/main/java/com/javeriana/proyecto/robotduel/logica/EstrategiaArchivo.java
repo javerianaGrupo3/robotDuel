@@ -22,7 +22,7 @@ public class EstrategiaArchivo implements FuenteMovimientos {
     @Override
     public Movimiento siguienteMovimiento() {
         Movimiento movimiento = movimientos.get(indice);
-        indice = (indice + 1) % movimientos.size(); // al llegar al final, vuelve al inicio
+        indice = (indice + 1) % movimientos.size();
         return movimiento;
     }
 

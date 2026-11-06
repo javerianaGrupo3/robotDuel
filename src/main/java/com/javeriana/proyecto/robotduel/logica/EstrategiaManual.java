@@ -15,7 +15,7 @@ public class EstrategiaManual implements FuenteMovimientos {
 
     public void elegir(Movimiento movimiento) {
         if (movimiento == null) {
-            throw new IllegalArgumentException("El movimiento no puede ser nulo");
+            throw new IllegalArgumentException("El movimiento no puede ser null");
         }
         pendientes.add(movimiento);
     }
