@@ -7,4 +7,5 @@ module com.javeriana.proyecto.robotduel {
 
         opens com.javeriana.proyecto.robotduel.modelo;
         opens com.javeriana.proyecto.robotduel.logica;
+        opens com.javeriana.proyecto.robotduel.archivos;
 }
