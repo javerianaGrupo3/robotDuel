@@ -14,20 +14,25 @@ public abstract class Movimiento {
         return false;
     }
 
+    public boolean puedeEjecutar(EstadoCombate actor) {
+        return true;
+    }
+
     public String getNombre() {
         return nombre;
     }
 
+    // Entiende ingles y español para lso sockets
     public static Movimiento desdeTexto(String texto) {
         if (texto == null) {
             throw new IllegalArgumentException("Movimiento vacío");
         }
         return switch (texto.trim().toUpperCase()) {
-            case "ATACAR", "ATTACK" -> new Ataque();
-            case "ESPECIAL", "SPECIAL" -> new Especial();
-            case "ESQUIVAR", "DODGE" -> new Esquivar();
-            case "CURAR", "HEAL" -> new Curar();
-            case "CARGAR", "CHARGE" -> new Cargar();
+            case "ATTACK", "ATACAR" -> new Ataque();
+            case "SPECIAL", "ESPECIAL" -> new Especial();
+            case "DODGE", "ESQUIVAR" -> new Esquivar();
+            case "HEAL", "CURAR" -> new Curar();
+            case "CHARGE", "CARGAR" -> new Cargar();
             default -> throw new IllegalArgumentException("Movimiento desconocido: " + texto);
         };
     }

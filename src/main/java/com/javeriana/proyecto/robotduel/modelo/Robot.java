@@ -11,6 +11,7 @@ public class Robot implements Serializable {
 
     public static final int VIDA_INICIAL = 100;
     public static final int TOTAL_PUNTOS = 200;
+    public static final int MAX_EFECTOS = 1;
 
     private final String nombre;
     private final int ataque;
@@ -36,6 +37,10 @@ public class Robot implements Serializable {
         if (ataque < 0 || defensa < 0 || velocidad < 0 || energia < 0) {
             throw new IllegalArgumentException("Las estadísticas no pueden ser negativas");
         }
+        //la velocidad no puede ser 0
+        if (velocidad == 0) {
+            throw new IllegalArgumentException("La velocidad debe ser mayor a 0");
+        }
         int suma = ataque + defensa + velocidad + energia;
         if (suma != TOTAL_PUNTOS) {
             throw new IllegalArgumentException(
@@ -43,6 +48,15 @@ public class Robot implements Serializable {
         }
         if (efectos == null) {
             throw new IllegalArgumentException("La lista de efectos no puede ser nula");
+        }
+        // no se pueden tener varios efectos a la vez
+        if (efectos.size() > MAX_EFECTOS) {
+            throw new IllegalArgumentException("Un robot solo puede tener " + MAX_EFECTOS + " efecto");
+        }
+        for (Efecto efecto : efectos) {
+            if (efecto == null) {
+                throw new IllegalArgumentException("Hay un efecto vacío en la lista");
+            }
         }
     }
 
@@ -72,6 +86,7 @@ public class Robot implements Serializable {
 
     @Override
     public String toString() {
-        return nombre + " [Ataque " + ataque + ", Defensa " + defensa + ", Velocidad " + velocidad + ", Energia " + energia + ", Efectos " + efectos + "]";
+        return nombre + " [Ataque " + ataque + ", Defensa " + defensa + ", Velocidad " + velocidad
+                + ", Energía " + energia + ", Efectos " + efectos + "]";
     }
 }

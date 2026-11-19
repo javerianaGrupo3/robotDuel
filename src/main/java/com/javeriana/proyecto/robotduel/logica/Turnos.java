@@ -2,21 +2,24 @@ package com.javeriana.proyecto.robotduel.logica;
 
 import com.javeriana.proyecto.robotduel.modelo.EstadoCombate;
 
+import java.util.Random;
+
 public class Turnos {
 
     private final EstadoCombate jugadorA;
-
     private final EstadoCombate jugadorB;
+    private final Random azar;
 
-    public Turnos(EstadoCombate jugadorA, EstadoCombate jugadorB) {
+    public Turnos(EstadoCombate jugadorA, EstadoCombate jugadorB, Random azar) {
         if (jugadorA == null || jugadorB == null) {
             throw new IllegalArgumentException("Los dos jugadores son obligatorios");
         }
-        if (jugadorA.getRobot().getVelocidad() <= 0 && jugadorB.getRobot().getVelocidad() <= 0) {
-            throw new IllegalArgumentException("Al menos un robot debe tener velocidad mayor a 0");
+        if (azar == null) {
+            throw new IllegalArgumentException("Falta el generador aleatorio");
         }
         this.jugadorA = jugadorA;
         this.jugadorB = jugadorB;
+        this.azar = azar;
     }
 
     public EstadoCombate siguienteTurno() {
@@ -39,18 +42,9 @@ public class Turnos {
         if (puedeB && !puedeA) {
             return jugadorB;
         }
-
-        if (jugadorA.getAcumuladorTurno() != jugadorB.getAcumuladorTurno()) {
-            return jugadorA.getAcumuladorTurno() > jugadorB.getAcumuladorTurno() ? jugadorA : jugadorB;
-        }
-
-        int velocidadA = jugadorA.getRobot().getVelocidad();
-        int velocidadB = jugadorB.getRobot().getVelocidad();
-        if (velocidadA != velocidadB) {
-            return velocidadA > velocidadB ? jugadorA : jugadorB;
-        }
-
-        return jugadorA;
+        // Empate: los dos llegaron a 100 al mismo tiempo. Decide el azar.
+        // En red ambos computadores deben usar la misma semilla para obtener el mismo resultado.
+        return azar.nextBoolean() ? jugadorA : jugadorB;
     }
 
     public EstadoCombate getRival(EstadoCombate actor) {

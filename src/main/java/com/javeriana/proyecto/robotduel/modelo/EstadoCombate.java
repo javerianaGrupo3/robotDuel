@@ -2,11 +2,11 @@ package com.javeriana.proyecto.robotduel.modelo;
 
 public class EstadoCombate {
 
-    public static final int MAX_TURNOS = 100;
+    public static final int UMBRAL_TURNO = 100;
     public static final int MAX_ESQUIVES = 2;
 
     private final Robot robot;
-    private double vida;
+    private int vida;
     private int energia;
     private int acumuladorTurno;
     private int esquivesActivos;
@@ -24,14 +24,17 @@ public class EstadoCombate {
 
     // Vida
 
-    public void recibirDmg(double dmg) {
-        if (dmg < 0) {
+    // Las fórmulas dan decimales; el daño se redondea aquí
+    public void recibirDmg(double danio) {
+        if (danio < 0) {
             return;
         }
-        vida = Math.max(0, vida - dmg);
+        int danioRedondeado = (int) Math.round(danio);
+        vida = Math.max(0, vida - danioRedondeado);
     }
 
-    public void curar(double cantidad) {
+    // La vida nunca pasa de 100
+    public void curar(int cantidad) {
         if (cantidad < 0) {
             return;
         }
@@ -42,7 +45,7 @@ public class EstadoCombate {
         return vida <= 0;
     }
 
-    // Energía
+    //  Energía
 
     public void cargarEnergia(int cantidad) {
         if (cantidad > 0) {
@@ -54,21 +57,22 @@ public class EstadoCombate {
         energia = 0;
     }
 
-    //Turnos
+    // Turnos
 
     public void avanzarAcumulador() {
         acumuladorTurno += robot.getVelocidad();
     }
 
     public boolean puedeActuar() {
-        return acumuladorTurno >= MAX_TURNOS;
+        return acumuladorTurno >= UMBRAL_TURNO;
     }
 
     public void consumirTurno() {
-        acumuladorTurno -= MAX_TURNOS;
+        acumuladorTurno -= UMBRAL_TURNO;
     }
 
-    //Esquivar
+    // Esquivar (maximo 2)
+
     public void agregarEsquive() {
         if (esquivesActivos < MAX_ESQUIVES) {
             esquivesActivos++;
@@ -83,24 +87,21 @@ public class EstadoCombate {
         };
     }
 
-    public void consumirEsquives() {
-        esquivesActivos = 0;
-    }
+    // Efectos
 
-    //Efectos
     public void aplicarEfectos(EstadoCombate enemigo) {
         for (Efecto efecto : robot.getEfectos()) {
             efecto.aplicar(this, enemigo);
         }
     }
 
-    //Getters
+    //Gets
 
     public Robot getRobot() {
         return robot;
     }
 
-    public double getVida() {
+    public int getVida() {
         return vida;
     }
 
@@ -118,7 +119,6 @@ public class EstadoCombate {
 
     @Override
     public String toString() {
-        return robot.getNombre() + " | Vida " + String.format("%.1f", vida)
-                + " | Energía " + energia + " | Esquives " + esquivesActivos;
+        return robot.getNombre() + " | Vida " + vida + " | Energía " + energia + " | Esquives " + esquivesActivos;
     }
 }
