@@ -19,6 +19,6 @@ public class ImpactoAleatorio implements ResolvedorImpacto {
 
     @Override
     public ResultadoAtaque resolver(EstadoCombate atacante, EstadoCombate defensor) {
-        return random.nextDouble() < defensor.getProbabilidadEsquive() ? ResultadoAtaque.ESQUIVE : ResultadoAtaque.HIT;
+        return random.nextDouble() < defensor.getProbabilidadEsquive() ? ResultadoAtaque.DODGE : ResultadoAtaque.HIT;
     }
 }
