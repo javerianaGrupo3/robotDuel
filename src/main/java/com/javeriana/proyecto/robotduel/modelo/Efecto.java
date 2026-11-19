@@ -30,7 +30,6 @@ public abstract class Efecto implements Serializable{
             default -> throw new IllegalArgumentException("Efecto desconocido: " + letra);
         };
     }
-
     @Override
     public String toString() {
         return nombre;

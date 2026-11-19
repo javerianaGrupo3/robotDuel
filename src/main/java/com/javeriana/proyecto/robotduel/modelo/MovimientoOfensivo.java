@@ -11,12 +11,12 @@ public abstract class MovimientoOfensivo extends Movimiento {
         return true;
     }
 
+    // Los esquives no se gastan
     @Override
     public final void ejecutar(EstadoCombate actor, EstadoCombate rival, ResultadoAtaque resultado) {
         if (resultado == ResultadoAtaque.HIT) {
             rival.recibirDmg(calcularDmg(actor, rival));
         }
-        rival.consumirEsquives();
         despuesDeAtacar(actor);
     }
 
@@ -25,6 +25,7 @@ public abstract class MovimientoOfensivo extends Movimiento {
     protected void despuesDeAtacar(EstadoCombate actor) {
     }
 
+    // Las formulas tienen la forma P elevado 2 / (P + DEF)
     protected static double formulaDmg(double potencia, int defensa) {
         double divisor = potencia + defensa;
         if (divisor <= 0) {
