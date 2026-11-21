@@ -1,0 +1,129 @@
+package com.javeriana.proyecto.robotduel.modelo;
+
+public class EstadoCombate {
+
+    public static final int UMBRAL_TURNO = 100;
+    public static final int MAX_ESQUIVES = 2;
+
+    private final Robot robot;
+    private int vida;
+    private int energia;
+    private int acumuladorTurno;
+    private int esquivesActivos;
+
+    public EstadoCombate(Robot robot) {
+        if (robot == null) {
+            throw new IllegalArgumentException("El robot no puede ser nulo");
+        }
+        this.robot = robot;
+        this.vida = Robot.VIDA_INICIAL;
+        this.energia = robot.getEnergia();
+        this.acumuladorTurno = 0;
+        this.esquivesActivos = 0;
+    }
+
+    // Vida
+
+    // Las fórmulas dan decimales; el daño se redondea aquí
+    public void recibirDmg(double danio) {
+        if (danio < 0) {
+            return;
+        }
+        int danioRedondeado = (int) Math.round(danio);
+        vida = Math.max(0, vida - danioRedondeado);
+    }
+
+    // La vida nunca pasa de 100
+    public void curar(int cantidad) {
+        if (cantidad < 0) {
+            return;
+        }
+        vida = Math.min(Robot.VIDA_INICIAL, vida + cantidad);
+    }
+
+    public boolean estaDestruido() {
+        return vida <= 0;
+    }
+
+    //  Energía
+
+    public void cargarEnergia(int cantidad) {
+        if (cantidad > 0) {
+            energia += cantidad;
+        }
+    }
+
+    public void vaciarEnergia() {
+        energia = 0;
+    }
+
+    // Turnos
+
+    public void avanzarAcumulador() {
+        acumuladorTurno += robot.getVelocidad();
+    }
+
+    public boolean puedeActuar() {
+        return acumuladorTurno >= UMBRAL_TURNO;
+    }
+
+    public void consumirTurno() {
+        acumuladorTurno -= UMBRAL_TURNO;
+    }
+
+    // Esquivar (maximo 2). Se acumulan hasta el siguiente ataque enemigo
+
+    public void agregarEsquive() {
+        if (esquivesActivos < MAX_ESQUIVES) {
+            esquivesActivos++;
+        }
+    }
+
+    // Se llama cuando llega el ataque enemigo (acierte o lo esquive)
+    public void consumirEsquives() {
+        esquivesActivos = 0;
+    }
+
+    public double getProbabilidadEsquive() {
+        return switch (esquivesActivos) {
+            case 0 -> 0.0;
+            case 1 -> 0.50;
+            default -> 0.75;
+        };
+    }
+
+    // Efectos
+
+    public void aplicarEfectos(EstadoCombate enemigo) {
+        for (Efecto efecto : robot.getEfectos()) {
+            efecto.aplicar(this, enemigo);
+        }
+    }
+
+    //Gets
+
+    public Robot getRobot() {
+        return robot;
+    }
+
+    public int getVida() {
+        return vida;
+    }
+
+    public int getEnergia() {
+        return energia;
+    }
+
+    public int getAcumuladorTurno() {
+        return acumuladorTurno;
+    }
+
+    public int getEsquivesActivos() {
+        return esquivesActivos;
+    }
+
+    @Override
+    public String toString() {
+        return robot.getNombre() + " | Vida " + vida + " | Energía " + energia + " | Esquives " + esquivesActivos;
+    }
+}
