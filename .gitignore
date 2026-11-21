@@ -37,3 +37,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+.idea/
+robots.bin
+movimientos_partida.txt
+
+.idea/
+robots.bin
+movimientos_partida.txt
