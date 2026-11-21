@@ -1,0 +1,201 @@
+
+/* Estilo pixel art: bordes rectos, sin degradados, colores planos */
+
+.root {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-color: #1b2840;
+}
+
+.pantalla {
+    -fx-padding: 18;
+    -fx-background-color: #1b2840;
+}
+
+/* Caja de diálogo clásica: borde oscuro + borde azul + fondo claro */
+.caja {
+    -fx-background-color: #283040, #6890d0, #283040, #f8f8f0;
+    -fx-background-insets: 0, 3, 7, 9;
+    -fx-padding: 18;
+}
+
+.marco-arena {
+    -fx-background-color: #283040, #6890d0, #283040;
+    -fx-background-insets: 0, 3, 7;
+    -fx-padding: 8;
+}
+
+/* Botones */
+.pixel-boton {
+    -fx-background-color: #283040, #f8f8f0;
+    -fx-background-insets: 0, 3;
+    -fx-padding: 10 14 10 10;
+}
+
+.pixel-boton-activo {
+    -fx-background-color: #283040, #fff0b0;
+}
+
+.pixel-boton-principal {
+    -fx-background-color: #283040, #f8c030;
+}
+
+.pixel-boton-principal.pixel-boton-activo {
+    -fx-background-color: #283040, #ffe070;
+}
+
+.pixel-boton:disabled {
+    -fx-opacity: 1;
+    -fx-background-color: #283040, #d8d8d0;
+}
+
+/* Campos de texto */
+.text-field {
+    -fx-background-color: #283040, #ffffff;
+    -fx-background-insets: 0, 3;
+    -fx-background-radius: 0;
+    -fx-text-fill: #283040;
+    -fx-highlight-fill: #6890d0;
+    -fx-padding: 6 8;
+}
+
+.text-field:disabled {
+    -fx-opacity: 0.6;
+}
+
+.spinner {
+    -fx-background-color: #283040;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+.spinner .text-field {
+    -fx-background-insets: 0, 3 0 3 3;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: #6890d0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 4 7;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #f8c030;
+}
+
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: #f8f8f0;
+}
+
+.combo-box {
+    -fx-background-color: #283040, #ffffff;
+    -fx-background-insets: 0, 3;
+    -fx-background-radius: 0;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #283040;
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #6890d0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 3 3 3 0;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #f8f8f0;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #283040, #ffffff;
+    -fx-background-insets: 0, 3;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #283040;
+}
+
+.combo-box-popup .list-cell:hover,
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #fff0b0;
+}
+
+/* Listas */
+.list-view,
+.list-view:focused {
+    -fx-background-color: #283040, #f0f0e8;
+    -fx-background-insets: 0, 3;
+    -fx-background-radius: 0;
+    -fx-padding: 3;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 5 6;
+}
+
+.list-cell:filled:selected,
+.list-cell:filled:selected:focused {
+    -fx-background-color: #c8d8f8;
+}
+
+.scroll-bar {
+    -fx-background-color: #d8d8d0;
+    -fx-background-radius: 0;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #6890d0;
+    -fx-background-radius: 0;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-padding: 0;
+}
+
+.tooltip {
+    -fx-font-family: "Consolas";
+    -fx-font-size: 14px;
+    -fx-background-color: #283040;
+    -fx-text-fill: #f8f8f0;
+    -fx-background-radius: 0;
+}
+
+.dialog-pane {
+    -fx-background-color: #f8f8f0;
+}
+
+/* Galería de mechas en el ensamble */
+.ficha {
+    -fx-background-color: #283040, #f0f0e8;
+    -fx-background-insets: 0, 3;
+}
+
+.ficha:hover {
+    -fx-background-color: #283040, #fff0b0;
+}
+
+.ficha-elegida,
+.ficha-elegida:hover {
+    -fx-background-color: #283040, #f8c030, #fff0b0;
+    -fx-background-insets: 0, 3, 6;
+}
+
+.ficha:disabled {
+    -fx-opacity: 0.5;
+}
