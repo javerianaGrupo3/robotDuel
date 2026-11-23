@@ -12,11 +12,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // Convierte los datos del juego en el texto del enunciado y viceversa:
-//   robot:      {HP:100, ATK:60, DEF:50, SPD:50, NRG:40, EFF:[Q], MECHA:KOI}
-//               (MECHA es un dato extra opcional: la apariencia elegida. Si no llega, se ignora)
-//   movimiento: ATTACK | SPECIAL | DODGE | HEAL | CHARGE
-//   respuesta:  HIT | DODGE
-// Al leer se acepta el robot en una o varias líneas, con o sin comillas y en cualquier orden.
+//   robot {HP:100, ATK:60, DEF:50, SPD:50, NRG:40, EFF:[Q], MECHA:KOI}
+//   MECHA es un dato extra opcional la apariencia elegida Si no llega se ignora
+//   movimiento ATTACK | SPECIAL | DODGE | HEAL | CHARGE
+//   respuesta  HIT | DODGE
+// Al leer se acepta el robot en una o varias líneas, con o sin comillas y en cualquier orden
 // Cualquier mensaje mal formado del rival se reporta como IOException.
 public final class Protocolo {
 
@@ -40,7 +40,7 @@ public final class Protocolo {
                 + (robot.getModelo() == null ? "" : ", MECHA:" + robot.getModelo()) + "}";
     }
 
-    // El protocolo no incluye nombre: el robot del rival se llama "Rival"
+    // El protocolo no incluye nombre el robot del rival se llama "Rival"
     public static Robot leerRobot(String mensaje) throws IOException {
         return leerRobot(mensaje, NOMBRE_RIVAL);
     }

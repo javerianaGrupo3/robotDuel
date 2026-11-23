@@ -47,7 +47,7 @@ public class RegistroPartida implements CombateListener {
         gestor.guardar(new ArrayList<>(movimientosPropios));
     }
 
-    // Guarda el historial completo de la partida legible para una persona
+    // Guarda el historial completo de la partida
     public synchronized void guardarHistorial(Path archivo) throws IOException {
         Path carpeta = archivo.toAbsolutePath().getParent();
         if (carpeta != null) {
