@@ -8,8 +8,8 @@ import com.javeriana.proyecto.robotduel.modelo.Robot;
 import java.io.Closeable;
 import java.io.IOException;
 
-// Partida en red sobre una conexión ya establecida.
-// Los dos computadores simulan el mismo combate: cada uno conoce las estadísticas de ambos robots,
+// Partida en red sobre una conexión ya establecida
+// Los dos computadores simulan el mismo combate cada uno conoce las estadísticas de ambos robots
 // envía sus propios movimientos y recibe los del rival.
 public class PartidaEnRed implements Closeable {
 
@@ -25,7 +25,7 @@ public class PartidaEnRed implements Closeable {
         this.combate = combate;
     }
 
-    // Fase de ensamble: envía mis estadísticas y espera las del rival
+    // Fase de ensamble envía mis estadísticas y espera las del rival
     public static Robot intercambiarRobots(Conexion conexion, Robot miRobot) throws IOException {
         if (conexion == null || miRobot == null) {
             throw new IllegalArgumentException("Faltan la conexión o el robot");
@@ -37,7 +37,7 @@ public class PartidaEnRed implements Closeable {
         return Protocolo.leerRobot(conexion.recibir(), nombreRival);
     }
 
-    // Arma el combate. A es siempre mi robot; el desempate se acuerda con la dirección de cada uno.
+    // Arma el combate. A es siempre mi robot el desempate se acuerda con la dirección de cada uno.
     public static PartidaEnRed crear(Conexion conexion, Robot miRobot, Robot robotRival, FuenteMovimientos miFuente) {
         if (conexion == null || miRobot == null || robotRival == null || miFuente == null) {
             throw new IllegalArgumentException("Faltan la conexión, los robots o la fuente de movimientos");

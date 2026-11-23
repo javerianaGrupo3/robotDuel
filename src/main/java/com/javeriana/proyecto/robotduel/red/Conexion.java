@@ -16,9 +16,9 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BooleanSupplier;
 
-// Conexión entre los dos jugadores como pide el enunciado:
-//  - socket de entrada: abrimos NUESTRO puerto y el rival se conecta a él (por ahí recibimos)
-//  - socket de salida: nos conectamos a la IP y puerto de entrada del rival (por ahí enviamos)
+// Conexión entre los dos jugadores
+//  - socket de entrada: abrimos NUESTRO puerto y el rival se conecta a el y por ahi recibimos
+//  - socket de salida: nos conectamos a la IP y puerto de entrada del rival por ahi enviamos
 // Los dos jugadores hacen exactamente lo mismo, no hay anfitrión ni invitado.
 public class Conexion implements Closeable {
 
@@ -129,7 +129,6 @@ public class Conexion implements Closeable {
             try {
                 socket.close();
             } catch (IOException ignorada) {
-                // no hay nada más que hacer
             }
         }
     }
@@ -148,7 +147,7 @@ public class Conexion implements Closeable {
     }
 
     // Espera el siguiente mensaje del rival por el socket de entrada.
-    // Si empieza con "{" y no se cierra en la misma línea (robot en varias líneas), lee hasta la "}".
+    // Si empieza con "{" y no se cierra en la misma línea robot en varias líneas, lee hasta la "}".
     public String recibir() throws IOException {
         String mensaje = leerLinea().trim();
         if (mensaje.startsWith("{")) {
