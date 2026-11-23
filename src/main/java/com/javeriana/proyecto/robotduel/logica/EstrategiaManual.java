@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-// Modo sin archivo de estrategia: el jugador elige cada movimiento en la interfaz.
-// Si se le da un GestorEstrategia, el archivo se va creando durante el combate con cada movimiento elegido.
+// Modo sin archivo de estrategia el jugador elige cada movimiento en la interfaz
+// Si se le da un GestorEstrategia el archivo se va creando durante el combate con cada movimiento elegido.
 public class EstrategiaManual implements FuenteMovimientos {
 
     private final BlockingQueue<Movimiento> pendientes = new LinkedBlockingQueue<>();
@@ -44,7 +44,7 @@ public class EstrategiaManual implements FuenteMovimientos {
         }
         if (archivo != null) {
             try {
-                // El primer movimiento crea (o reemplaza) el archivo; los demás se agregan al final
+                // El primer movimiento crea o reemplaza el archivo los demás se agregan al final
                 if (primero) {
                     archivo.guardar(List.of(movimiento));
                 } else {
