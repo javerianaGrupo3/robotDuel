@@ -1,5 +1,6 @@
 package com.javeriana.proyecto.robotduel.vista;
 
+import com.javeriana.proyecto.robotduel.archivos.ArchivoCPU;
 import com.javeriana.proyecto.robotduel.red.Conexion;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -9,6 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -27,6 +29,7 @@ class PantallaConexion {
     private final TextField campoPuertoRival = new TextField("5001");
     private final PixelBoton botonConectar = new PixelBoton("CONECTAR", 3).principal();
     private final PixelBoton botonCancelar = new PixelBoton("CANCELAR", 3);
+    private final PixelBoton botonCPU = new PixelBoton("VS CPU", 3);
     private final PixelText estado = Componentes.texto("", 2, Componentes.CLARO).conAnchoMaximo(820);
 
     private volatile boolean cancelado;
@@ -60,7 +63,9 @@ class PantallaConexion {
             Componentes.estado(estado, "CANCELANDO...", Componentes.CLARO);
         });
         botonCancelar.setDisable(true);
-        HBox botones = new HBox(16, botonConectar, botonCancelar);
+        botonCPU.setAyuda("Un jugador: la CPU usa el robot y repite los movimientos de cpu.txt (se crea si no existe)");
+        botonCPU.setOnAction(this::jugarContraCPU);
+        HBox botones = new HBox(16, botonConectar, botonCancelar, botonCPU);
         botones.setAlignment(Pos.CENTER);
 
         HBox desfile = new HBox(22);
@@ -111,12 +116,23 @@ class PantallaConexion {
         });
     }
 
+    // Modo un jugador lee cpu.txt lo crea con un ejemplo si no existe
+    private void jugarContraCPU() {
+        try {
+            ArchivoCPU.crearSiNoExiste(ArchivoCPU.RUTA_POR_DEFECTO);
+            app.jugarContraCPU(ArchivoCPU.leer(ArchivoCPU.RUTA_POR_DEFECTO));
+        } catch (IOException | IllegalArgumentException e) {
+            Componentes.estado(estado, "CPU.TXT NO VALIDO: " + e.getMessage(), Componentes.ROJO_CLARO);
+        }
+    }
+
     private void bloquear(boolean conectando) {
         campoMiPuerto.setDisable(conectando);
         campoIpRival.setDisable(conectando);
         campoPuertoRival.setDisable(conectando);
         botonConectar.setDisable(conectando);
         botonCancelar.setDisable(!conectando);
+        botonCPU.setDisable(conectando);
     }
 
     private static String direccionesLocales() {

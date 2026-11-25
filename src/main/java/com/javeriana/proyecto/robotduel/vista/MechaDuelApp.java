@@ -1,5 +1,6 @@
 package com.javeriana.proyecto.robotduel.vista;
 
+import com.javeriana.proyecto.robotduel.archivos.ArchivoCPU;
 import com.javeriana.proyecto.robotduel.modelo.Movimiento;
 import com.javeriana.proyecto.robotduel.modelo.Robot;
 import com.javeriana.proyecto.robotduel.red.Conexion;
@@ -24,6 +25,7 @@ public class MechaDuelApp extends Application {
     private Robot miRobot;
     private Robot robotRival;
     private Thread hiloCombate;
+    private ArchivoCPU.ConfiguracionCPU configuracionCPU; // solo en el modo contra la CPU (conexion == null)
 
     @Override
     public void start(Stage stage) {
@@ -42,6 +44,7 @@ public class MechaDuelApp extends Application {
         cerrarConexion();
         miRobot = null;
         robotRival = null;
+        configuracionCPU = null;
         mostrar(new PantallaConexion(this).getVista());
     }
 
@@ -50,15 +53,27 @@ public class MechaDuelApp extends Application {
         mostrar(new PantallaEnsamble(this, nuevaConexion).getVista());
     }
 
+    // Modo un jugador no hay sockets conexion queda en null
+    // que usa el robot y repite los movimientos de su archivo cpu.txt
+    void jugarContraCPU(ArchivoCPU.ConfiguracionCPU configuracion) {
+        cerrarConexion();
+        this.configuracionCPU = configuracion;
+        mostrar(new PantallaEnsamble(this, null).getVista());
+    }
+
+    ArchivoCPU.ConfiguracionCPU getConfiguracionCPU() {
+        return configuracionCPU;
+    }
+
     void robotsListos(Robot mio, Robot rival) {
         this.miRobot = mio;
         this.robotRival = rival;
         mostrar(new PantallaEstrategia(this, mio, rival).getVista());
     }
 
-    // estrategia == null significa jugar a mano; crearArchivo: guardar los movimientos en estrategia.txt
     void iniciarCombate(List<Movimiento> estrategia, boolean crearArchivo) {
-        PantallaCombate pantalla = new PantallaCombate(this, conexion, miRobot, robotRival, estrategia, crearArchivo);
+        PantallaCombate pantalla = new PantallaCombate(this, conexion, miRobot, robotRival, estrategia, crearArchivo,
+                configuracionCPU);
         mostrar(pantalla.getVista());
         hiloCombate = pantalla.comenzar();
     }

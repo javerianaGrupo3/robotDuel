@@ -16,7 +16,6 @@ public class GestorEstrategia {
 
     private final Path archivo;
 
-    // Usa estrategia.txt en la carpeta donde se ejecuta el juego
     public GestorEstrategia() {
         this(Path.of(NOMBRE_ARCHIVO));
     }
@@ -28,12 +27,10 @@ public class GestorEstrategia {
         this.archivo = archivo;
     }
 
-    // Decide el juego con archivo o sin archivo
     public boolean existe() {
         return Files.isRegularFile(archivo);
     }
 
-    // Lee el archivo y devuelve los movimientos en orden
     public List<Movimiento> leer() throws IOException {
         List<String> lineas = Files.readAllLines(archivo, StandardCharsets.UTF_8);
         List<Movimiento> movimientos = new ArrayList<>();
@@ -57,7 +54,23 @@ public class GestorEstrategia {
         return movimientos;
     }
 
-    // Escribe los movimientos uno por linea
+    public static List<Movimiento> interpretar(String texto) {
+        List<Movimiento> movimientos = new ArrayList<>();
+        String[] lineas = texto.split("\\R");
+        for (int i = 0; i < lineas.length; i++) {
+            String linea = lineas[i].trim();
+            if (linea.isEmpty() || linea.startsWith("#")) {
+                continue;
+            }
+            try {
+                movimientos.add(Movimiento.desdeTexto(linea));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Movimiento no válido \"" + linea + "\"", e);
+            }
+        }
+        return movimientos;
+    }
+
     public void guardar(List<Movimiento> movimientos) throws IOException {
         if (movimientos == null || movimientos.isEmpty()) {
             throw new IllegalArgumentException("No hay movimientos para guardar");
@@ -73,7 +86,6 @@ public class GestorEstrategia {
         Files.write(archivo, lineas, StandardCharsets.UTF_8);
     }
 
-    // Agrega un movimiento al final del archivo (lo crea si no existe)
     public void agregar(Movimiento movimiento) throws IOException {
         if (movimiento == null) {
             throw new IllegalArgumentException("El movimiento no puede ser nulo");

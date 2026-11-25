@@ -142,7 +142,11 @@ class PantallaEnsamble {
         centro.setAlignment(Pos.TOP_CENTER);
 
         elegirModelo(modelo);
-        Componentes.estado(estado, "CONECTADO CON " + conexion.getDireccionRival(), Componentes.VERDE_CLARO);
+        if (conexion == null) {
+            Componentes.estado(estado, "MODO UN JUGADOR: CONTRA LA CPU", Componentes.VERDE_CLARO);
+        } else {
+            Componentes.estado(estado, "CONECTADO CON " + conexion.getDireccionRival(), Componentes.VERDE_CLARO);
+        }
         VBox raiz = new VBox(16, Componentes.encabezado("PASO 2 DE 4 - ENSAMBLE"), centro, estado);
         raiz.setAlignment(Pos.TOP_CENTER);
         raiz.getStyleClass().add("pantalla");
@@ -214,6 +218,10 @@ class PantallaEnsamble {
             robot = construirRobot();
         } catch (IllegalArgumentException e) {
             Componentes.estado(estado, e.getMessage(), Componentes.ROJO_CLARO);
+            return;
+        }
+        if (conexion == null) {
+            app.robotsListos(robot, app.getConfiguracionCPU().robot());
             return;
         }
         bloquear(true);

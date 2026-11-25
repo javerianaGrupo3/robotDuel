@@ -6,7 +6,6 @@ public class Especial extends MovimientoOfensivo {
         super("SPECIAL");
     }
 
-    // Se puede usar con cualquier energía (con 0 pega igual que un ataque normal)
     @Override
     protected double calcularDmg(EstadoCombate actor, EstadoCombate rival) {
         double potencia = actor.getRobot().getAtaque() + 0.5 * actor.getEnergia();
