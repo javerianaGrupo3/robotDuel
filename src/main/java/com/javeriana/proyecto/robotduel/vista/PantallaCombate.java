@@ -1,13 +1,17 @@
 package com.javeriana.proyecto.robotduel.vista;
 
+import com.javeriana.proyecto.robotduel.archivos.ArchivoCPU;
 import com.javeriana.proyecto.robotduel.archivos.GestorEstrategia;
 import com.javeriana.proyecto.robotduel.archivos.GestorRobots;
 import com.javeriana.proyecto.robotduel.archivos.RegistroPartida;
+import com.javeriana.proyecto.robotduel.logica.Combate;
 import com.javeriana.proyecto.robotduel.logica.CombateListener;
 import com.javeriana.proyecto.robotduel.logica.EstrategiaArchivo;
 import com.javeriana.proyecto.robotduel.logica.EstrategiaManual;
 import com.javeriana.proyecto.robotduel.logica.FuenteMovimientos;
+import com.javeriana.proyecto.robotduel.logica.ImpactoAleatorio;
 import com.javeriana.proyecto.robotduel.logica.RegistroTurno;
+import com.javeriana.proyecto.robotduel.logica.RivalCPU;
 import com.javeriana.proyecto.robotduel.modelo.Efecto;
 import com.javeriana.proyecto.robotduel.modelo.EstadoCombate;
 import com.javeriana.proyecto.robotduel.modelo.Movimiento;
@@ -77,8 +81,12 @@ class PantallaCombate implements CombateListener {
     private final boolean crearArchivo;
     private final String nombreMio;
     private final String nombreRival;
+    private final ArchivoCPU.ConfiguracionCPU configuracionCPU; // null = partida en red
 
-    private PartidaEnRed partida;
+    // El combate y el estado de cada robot
+    private Combate combate;
+    private EstadoCombate miEstado;
+    private EstadoCombate estadoRival;
     private EstrategiaManual manual;
     private RegistroPartida registro;
 
@@ -92,19 +100,20 @@ class PantallaCombate implements CombateListener {
     private final VBox listaEstrategia = new VBox(6);
     private final ListView<Entrada> bitacora = new ListView<>();
 
-    // Último estado conocido de cada robot (se actualiza al encolar, no al animar)
+    // Último estado conocido de cada robot
     private Foto previaMia;
     private Foto previaRival;
     private int turnoEstrategia;
 
     PantallaCombate(MechaDuelApp app, Conexion conexion, Robot miRobot, Robot robotRival, List<Movimiento> estrategia,
-                    boolean crearArchivo) {
+                    boolean crearArchivo, ArchivoCPU.ConfiguracionCPU configuracionCPU) {
         this.app = app;
         this.conexion = conexion;
         this.miRobot = miRobot;
         this.robotRival = robotRival;
         this.estrategia = estrategia;
         this.crearArchivo = crearArchivo;
+        this.configuracionCPU = configuracionCPU;
         this.nombreMio = PixelFont.normalizar(miRobot.getNombre());
         this.nombreRival = PixelFont.normalizar(robotRival.getNombre());
     }
@@ -182,19 +191,31 @@ class PantallaCombate implements CombateListener {
             manual = crearArchivo ? new EstrategiaManual(new GestorEstrategia()) : new EstrategiaManual();
             miFuente = manual;
         }
-        partida = PartidaEnRed.crear(conexion, miRobot, robotRival, miFuente);
+        if (configuracionCPU == null) {
+            PartidaEnRed partida = PartidaEnRed.crear(conexion, miRobot, robotRival, miFuente);
+            combate = partida.getCombate();
+            miEstado = partida.getMiEstado();
+            estadoRival = partida.getEstadoRival();
+        } else {
+            // sus movimientos salen de cpu.txt y el HIT/DODGE se decid1e aquí mismo
+            miEstado = new EstadoCombate(miRobot);
+            estadoRival = new EstadoCombate(robotRival);
+            FuenteMovimientos cpu = new RivalCPU(new EstrategiaArchivo(configuracionCPU.movimientos()),
+                    PAUSA_ESTRATEGIA_MS);
+            combate = new Combate(miEstado, miFuente, estadoRival, cpu, new ImpactoAleatorio(), true);
+        }
         registro = new RegistroPartida(miRobot.getNombre());
-        partida.getCombate().agregarListener(registro);
-        partida.getCombate().agregarListener(this);
-        previaMia = Foto.de(partida.getMiEstado());
-        previaRival = Foto.de(partida.getEstadoRival());
+        combate.agregarListener(registro);
+        combate.agregarListener(this);
+        previaMia = Foto.de(miEstado);
+        previaRival = Foto.de(estadoRival);
         infoMio.mostrar(previaMia);
         infoRival.mostrar(previaRival);
         cola.agregar(listo -> escribir("COMIENZA EL DUELO! " + nombreMio + " VS " + nombreRival + "!", listo));
 
         Thread hilo = new Thread(() -> {
             try {
-                partida.getCombate().jugar();
+                combate.jugar();
             } catch (InterruptedException e) {
                 // el jugador salió de la partida
             } catch (RuntimeException e) {
@@ -213,24 +234,24 @@ class PantallaCombate implements CombateListener {
 
     @Override
     public void turnoIniciado(EstadoCombate actor) {
-        boolean esMio = actor == partida.getMiEstado();
-        Foto mia = Foto.de(partida.getMiEstado());
-        Foto rival = Foto.de(partida.getEstadoRival());
+        boolean esMio = actor == miEstado;
+        Foto mia = Foto.de(miEstado);
+        Foto rival = Foto.de(estadoRival);
         Platform.runLater(() -> alIniciarTurno(esMio, mia, rival));
     }
 
     @Override
     public void turnoJugado(RegistroTurno turno) {
-        Foto mia = Foto.de(partida.getMiEstado());
-        Foto rival = Foto.de(partida.getEstadoRival());
+        Foto mia = Foto.de(miEstado);
+        Foto rival = Foto.de(estadoRival);
         Platform.runLater(() -> alJugarTurno(turno, mia, rival));
     }
 
     @Override
     public void combateTerminado(EstadoCombate ganador) {
-        boolean gane = ganador == partida.getMiEstado();
-        Foto mia = Foto.de(partida.getMiEstado());
-        Foto rival = Foto.de(partida.getEstadoRival());
+        boolean gane = ganador == miEstado;
+        Foto mia = Foto.de(miEstado);
+        Foto rival = Foto.de(estadoRival);
         Platform.runLater(() -> alTerminar(gane, mia, rival));
     }
 
